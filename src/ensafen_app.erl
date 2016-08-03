@@ -14,6 +14,9 @@ start(_Type, _Args) ->
   io:format("ListenAddress: ~p~n", [ListenAddress]),
   io:format("ListenPort: ~p~n", [ListenPort]),
 
+  {ok, BannedRegexList} = application:get_env(ensafen, bannedRegexList),
+  io:format("Number of banned regexes: ~p~n", [length(BannedRegexList)]),
+
   cowboy:start_http(my_http_listener, 100,
       [
         {ip, ListenAddress},

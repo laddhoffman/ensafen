@@ -30,9 +30,8 @@ handle(Req, State=#state{}) ->
 
   {ok, BannedRegexList} = application:get_env(ensafen, bannedRegexList),
 
-  case filter_multiple_by_regex_list([Query, ReqBody], [BannedRegexList]) of
+  case filter_multiple_by_regex_list([Query, ReqBody], BannedRegexList) of
     match ->
-      io:format("Query string matches at least one banned regex!~n"),
       {ok, Req2} = cowboy_req:reply(404, Req),
       {ok, Req2, State};
     nomatch ->
@@ -129,7 +128,10 @@ do_proxy_request(State, Req, ReqMethod, ReqPath, ReqHeaders, Query, ReqBody) ->
 terminate(_Reason, _Req, _State) ->
   ok.
 
-filter_by_regex_list(String, [Regex|Rest]) ->
+% Checks string against each regex in a list
+% Returns an atom, either match or nomatch
+filter_by_regex_list(String, [RegexItem|Rest]) ->
+  {_Description, Regex, Options} = RegexItem,
   StringToUse = case is_binary(String) of
     true -> binary_to_list(String);
     false -> String
@@ -138,14 +140,19 @@ filter_by_regex_list(String, [Regex|Rest]) ->
     true -> binary_to_list(Regex);
     false -> Regex
   end,
-  case re:run(StringToUse, RegexToUse) of
-    {match, _Captured} -> match;
-    nomatch -> filter_by_regex_list(String, Rest)
+  case re:run(StringToUse, RegexToUse, Options) of
+    {match, _Captured} ->
+      io:format("Query string matches banned regex: ~p~n", [RegexItem]),
+      match;
+    nomatch ->
+      filter_by_regex_list(String, Rest)
   end;
 
 filter_by_regex_list(_String, []) ->
   nomatch.
 
+% Checks each string in a list against each regex in a list
+% Returns an atom, either match or nomatch
 filter_multiple_by_regex_list([String|Rest], RegexList) ->
   case filter_by_regex_list(String, RegexList) of
     match ->
