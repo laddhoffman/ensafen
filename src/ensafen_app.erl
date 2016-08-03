@@ -5,12 +5,16 @@
 -export([stop/1]).
 
 start(_Type, _Args) ->
-  % Adding Cowboy here
   Dispatch = cowboy_router:compile([
     {'_', [{'_', safify_handler, []}]}
   ]),
-  application:ensure_all_started(gun),
-  cowboy:start_http(my_http_listener, 100, [{port, 8080}],
+  {ok, ListenAddress} = application:get_env(ensafen, listenAddress),
+  {ok, ListenPort} = application:get_env(ensafen, listenPort),
+  cowboy:start_http(my_http_listener, 100,
+      [
+        {ip, ListenAddress},
+        {port, ListenPort}
+      ],
     [{env, [{dispatch, Dispatch}]}]
   ),
 	ensafen_sup:start_link().

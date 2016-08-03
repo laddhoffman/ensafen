@@ -1,6 +1,6 @@
 PROJECT = ensafen
 PROJECT_DESCRIPTION = Make a web endpoint safer by protecting it with this reverse proxy.
-PROJECT_VERSION = 0.0.1
+PROJECT_VERSION = 0.0.2
 DEPS = cowboy gun
 
 include erlang.mk
