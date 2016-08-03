@@ -3,6 +3,6 @@
 	{vsn, "0.0.2"},
 	{modules, ['ensafen_app','ensafen_sup','safify_handler']},
 	{registered, [ensafen_sup]},
-	{applications, [kernel,stdlib,cowboy,gun]},
+	{applications, [kernel,stdlib,inets,cowboy,gun]},
 	{mod, {ensafen_app, []}}
 ]}.

@@ -1,4 +1,6 @@
 _rel/
 deps/
 rel/
+.ebin/
+
 *.beam
