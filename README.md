@@ -7,7 +7,7 @@
 
  `cd ensafen`
 
-3. Edit the configuration file rel/sys.config
+3. Optionally, edit the configuration file config/sys.config
 
 4. Build the project
 
@@ -31,7 +31,12 @@
 
 6. Perform any web request to the reverse proxy and it will pass your request
  to the destination host, and pass the reply back to you. Unless you attempt a
- SQL injection attack; then, you may receive an error message, or you may receive no reply.
+ SQL injection attack; then, you may receive an error message, or you may
+ receive no reply.
+
+7. To override the `sys.config` without rebuilding the application, place a
+ `sys.config` file in the directory of the release - in this case,
+ `./_rel/ensafen_release/`.
 
 ## Ideas for Improvement
 * Forward chunks as they arrive, rather than buffering the entire request/response
