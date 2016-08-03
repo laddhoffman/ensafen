@@ -25,9 +25,23 @@ handle(Req, State=#state{}) ->
   [ReqMethod] = [X || {method, X} <- ReqList],
   [Query] = [X || {qs, X} <- ReqList],
 
-  io:format("Req: ~p~nMethod: ~p~nReqPath: ~p~nQuery:~p~nHeaders: ~p~nBody: ~p~n",
-    [Req, ReqMethod, ReqPath, Query, ReqHeaders, ReqBody]),
+  io:format("Method: ~p~nReqPath: ~p~nQuery:~p~nHeaders: ~p~nBody: ~p~n",
+    [ReqMethod, ReqPath, Query, ReqHeaders, ReqBody]),
 
+  {ok, BannedRegexList} = application:get_env(ensafen, bannedRegexList),
+
+  case filter_multiple_by_regex_list([Query, ReqBody], [BannedRegexList]) of
+    match ->
+      io:format("Query string matches at least one banned regex!~n"),
+      {ok, Req2} = cowboy_req:reply(404, Req),
+      {ok, Req2, State};
+    nomatch ->
+      do_proxy_request(State, Req, ReqMethod, ReqPath, ReqHeaders, Query,
+        ReqBody)
+  end.
+
+
+do_proxy_request(State, Req, ReqMethod, ReqPath, ReqHeaders, Query, ReqBody) ->
   {ok, Destination} = application:get_env(ensafen, destination),
 
   {ok, DestinationUri} = http_uri:parse(http_uri:decode(Destination)),
@@ -114,3 +128,31 @@ handle(Req, State=#state{}) ->
 
 terminate(_Reason, _Req, _State) ->
   ok.
+
+filter_by_regex_list(String, [Regex|Rest]) ->
+  StringToUse = case is_binary(String) of
+    true -> binary_to_list(String);
+    false -> String
+  end,
+  RegexToUse = case is_binary(Regex) of
+    true -> binary_to_list(Regex);
+    false -> Regex
+  end,
+  case re:run(StringToUse, RegexToUse) of
+    {match, _Captured} -> match;
+    nomatch -> filter_by_regex_list(String, Rest)
+  end;
+
+filter_by_regex_list(_String, []) ->
+  nomatch.
+
+filter_multiple_by_regex_list([String|Rest], RegexList) ->
+  case filter_by_regex_list(String, RegexList) of
+    match ->
+      match;
+    nomatch ->
+      filter_multiple_by_regex_list(Rest, RegexList)
+  end;
+
+filter_multiple_by_regex_list([], _RegexList) ->
+  nomatch.

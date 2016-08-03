@@ -11,6 +11,9 @@ start(_Type, _Args) ->
   {ok, ListenAddress} = application:get_env(ensafen, listenAddress),
   {ok, ListenPort} = application:get_env(ensafen, listenPort),
 
+  io:format("ListenAddress: ~p~n", [ListenAddress]),
+  io:format("ListenPort: ~p~n", [ListenPort]),
+
   cowboy:start_http(my_http_listener, 100,
       [
         {ip, ListenAddress},
