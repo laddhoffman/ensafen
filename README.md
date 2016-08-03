@@ -4,7 +4,7 @@ It is built as a programming exercise, and is not recommended for use in product
 
 ## Features
 * A configuration file is used to specify the destination host. This is done in a URI format,
-similar to what you might use in a reverse proxy like [nginx|nginx.org], which offers a degree
+similar to what you might use in a reverse proxy like [nginx](nginx.org), which offers a degree
 of flexibility in configuring the destination. The destination can be an http or https address;
 the port can be specified; and a remote path can be specified, to which the requset path will be
 appended. For example, if your destination is `https://yourdomain.com/somedir`, and *ensafen* is
@@ -61,12 +61,12 @@ Each request is filtered on its own merits.
 * Profile *ensafen* to identify performance bottlenecks
 
 ## Dependencies and Citations
-This project relies on three projects from [99s|ninenines.eu]: cowboy, gun, and
+This project relies on three projects from [99s](ninenines.eu): cowboy, gun, and
 erlang.mk. Cowboy is used to talk to our application's client via HTTP, to receive
 their request and send our reply. Gun is used to issue a request to the destination
 host, on behalf of our client. Erlang.mk is a build system and package manager.
 
-[httpbin.org] provides a useful endpoint to which we can issue test HTTP requests.
+[httpbin.org](httpbin.org) provides a useful endpoint to which we can issue test HTTP requests.
 
-The regular expressions provided in this package are based on [this guide|http://www.symantec.com/connect/articles/detection-sql-injection-and-cross-site-scripting-attacks] presented by [Symantec|symantec.com].
+The regular expressions provided in this package are based on [this guide](http://www.symantec.com/connect/articles/detection-sql-injection-and-cross-site-scripting-attacks) presented by [Symantec](symantec.com).
 
