@@ -77,9 +77,7 @@ handle(Req, State=#state{}) ->
   {ok, ConnProtocol} = gun:await_up(ConnPid),
   io:format("ConnProtocol: ~p~n", [ConnProtocol]),
 
-  % Now we pass the request to the Destination host.
-  % Note that to do this properly, we should also preserve the headers,
-  % except for the Host field.
+  % Now we pass the request to the destination host
 
   StreamRef = case ReqMethod of
     <<"GET">> ->
@@ -95,9 +93,7 @@ handle(Req, State=#state{}) ->
     <<"PUT">> ->
       gun:put(ConnPid, TargetPath, NewReqHeaders, ReqBody);
     <<"PATCH">> ->
-      gun:patch(ConnPid, TargetPath, NewReqHeaders, ReqBody);
-    _ ->
-      nil
+      gun:patch(ConnPid, TargetPath, NewReqHeaders, ReqBody)
   end,
 
   % Now we wait for the response, and forward it to the client.
