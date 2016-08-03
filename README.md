@@ -23,7 +23,7 @@ Each request is filtered on its own merits.
 
  `cd ensafen`
 
-3. Optionally, edit the configuration file config/sys.config
+3. Optionally, edit the configuration file `config/sys.config`
 
 4. Build the project
 
@@ -33,17 +33,17 @@ Each request is filtered on its own merits.
 
   * With console
 
-   `./_rel/ensafen_release/bin/ensafen_release console`
+    `./_rel/ensafen_release/bin/ensafen_release console`
 
   * As a daemon
 
     * Start
 
-    `./_rel/ensafen_release/bin/ensafen_release start`
+      `./_rel/ensafen_release/bin/ensafen_release start`
 
     * Stop
 
-    `./_rel/ensafen_release/bin/ensafen_release stop`
+      `./_rel/ensafen_release/bin/ensafen_release stop`
 
 6. Perform any web request to the reverse proxy and it will pass your request
  to the destination host, and pass the reply back to you. Unless you attempt a
