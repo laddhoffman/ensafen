@@ -43,12 +43,14 @@ handle(Req, State=#state{}) ->
 do_proxy_request(State, Req, ReqMethod, ReqPath, ReqHeaders, Query, ReqBody) ->
   {ok, Destination} = application:get_env(ensafen, destination),
 
-  {ok, DestinationUri} = http_uri:parse(http_uri:decode(Destination)),
-  io:format("Destination: ~p~n", [Destination]),
-  io:format("Destination URI: ~p~n", [DestinationUri]),
-
-  {_Scheme, _UserInfo, DestinationHost, DestinationPort, DestinationPath,
-    _Query} = DestinationUri,
+  DestinationUri = uri_string:parse(Destination),
+  DestinationHost = maps:get(host, DestinationUri),
+  DestinationScheme = maps:get(scheme, DestinationUri),
+  DestinationPort = maps:get(port, DestinationUri, case DestinationScheme of 
+      "https" -> 443;
+      _ -> 80
+  end),
+  DestinationPath = maps:get(path, DestinationUri, "/"),
 
   io:format("DestinationHost: ~p~n", [DestinationHost]),
   io:format("DestinationPort: ~p~n", [DestinationPort]),
